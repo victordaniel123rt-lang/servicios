@@ -4,8 +4,10 @@ import com.services.inventory_service.model.dto.BaseResponse;
 import com.services.inventory_service.model.dto.OrderItemsDTO;
 import com.services.inventory_service.service.InventoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -21,9 +23,10 @@ public class Controller {
     }
 
     @PostMapping("/in-stock")
-    @ResponseStatus()
-    public BaseResponse areInStock(@RequestBody List<OrderItemsDTO> orderItemsDTOS){
-        return service.areInStock(orderItemsDTOS);
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<BaseResponse> areInStock(@RequestBody List<OrderItemsDTO> orderItems) {
+        return Mono.fromCallable(() -> this.service.areInStock(orderItems))
+                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
     }
 
 

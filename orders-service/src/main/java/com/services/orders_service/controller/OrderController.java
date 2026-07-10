@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -22,9 +23,10 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "order-service", fallbackMethod = "placeOrderFallback")
-    public ResponseEntity<OrderDTO> placeOrder(@RequestBody OrderDTO dto){
-    var orders = this.service.crearOrder(dto);
-    return ResponseEntity.ok(orders);
+    public Mono<ResponseEntity<OrderDTO>> placeOrder(@RequestBody OrderDTO dto){
+        return Mono.fromCallable(() -> this.service.crearOrder(dto))
+                .map(orders -> ResponseEntity.status(HttpStatus.CREATED).body(orders))
+                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
     }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
