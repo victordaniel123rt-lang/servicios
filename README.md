@@ -1,5 +1,6 @@
 # Servicios — Plataforma eCommerce con microservicios (Java / Spring Boot)
 
+![servicios](./docs/servicios.png)
 Resumen
 -------
 Plataforma de ejemplo de eCommerce construida como un conjunto de microservicios en Java 17 usando Spring Boot y Spring Cloud. Cada servicio mantiene su propia persistencia en MariaDB y se comunican de forma asíncrona a través de Kafka. Existe un servidor de descubrimiento (Eureka) y un API Gateway (declarado en el POM padre).
